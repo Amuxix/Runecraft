@@ -13,8 +13,14 @@ import me.amuxix.{Direction, Matrix4, Player}
 /**
   * Created by Amuxix on 01/12/2016.
   */
-object Test2 extends RunePattern {
-  val pattern: Pattern = Pattern(Test2.apply, activatesWith = { case Some(item) if item.material.isSword => true })(
+object Test2 extends RunePattern[Test2] {
+  override val runeCreator: RuneCreator = Test2.apply
+
+  override val activatesWith: PartialFunction[Option[Item], Boolean] = {
+    case Some(item) if item.material.isSword => true
+  }
+  // format: off
+  override val layers: List[BaseLayer] = List(
     ActivationLayer(
       Glass, NotInRune, EndStone, NotInRune, Glass,
       NotInRune, Glass, NotInRune, Glass, NotInRune,
@@ -23,9 +29,17 @@ object Test2 extends RunePattern {
       Glass, NotInRune, Glass, NotInRune, Glass
     )
   )
+  // format: on
 }
 
-case class Test2(center: Location, creator: Player, direction: Direction, rotation: Matrix4, pattern: Pattern) extends Rune with ConsumableBlocks {
+case class Test2(
+  center: Location,
+  creator: Player,
+  direction: Direction,
+  rotation: Matrix4,
+  pattern: Pattern
+) extends Rune
+    with ConsumableBlocks {
   override protected def onActivate(activationItem: Option[Item]): EitherT[IO, String, Boolean] = EitherT.rightT(true)
 
   /**

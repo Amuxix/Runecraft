@@ -13,17 +13,26 @@ import me.amuxix.{Player, _}
 /**
   * Created by Amuxix on 02/01/2017.
   */
-object Compass extends RunePattern {
-  val pattern: Pattern = Pattern(Compass.apply)(
+object Compass extends RunePattern[Compass] {
+  override val runeCreator: RuneCreator = apply
+  // format: off
+  override val layers: List[BaseLayer] = List(
     ActivationLayer(
       Tier, Air, Tier,
       Air, Tier, Air,
       Tier, Air, Tier
     )
   )
+  // format: on
 }
 
-case class Compass(center: Location, creator: Player, direction: Direction, rotation: Matrix4, pattern: Pattern) extends Tiered {
+case class Compass(
+  center: Location,
+  creator: Player,
+  direction: Direction,
+  rotation: Matrix4,
+  pattern: Pattern
+) extends Tiered {
 
   override protected def onActivate(activationItem: Option[Item]): EitherT[IO, String, Boolean] = {
     //These lines below change the compass to make a sort of an arrow pointing north

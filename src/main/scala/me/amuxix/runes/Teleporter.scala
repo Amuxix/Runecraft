@@ -14,12 +14,14 @@ import me.amuxix.runes.waypoints.{GenericWaypoint, Waypoint}
 
 import scala.math.log10
 
-
 /**
   * Created by Amuxix on 03/01/2017.
   */
-object Teleporter extends RunePattern {
-  val pattern: Pattern = Pattern(Teleporter.apply, verticality = true)(
+object Teleporter extends RunePattern[Teleporter] {
+  override val runeCreator: RuneCreator = Teleporter.apply
+  override val verticality: Boolean = true
+  // format: off
+  override val layers: List[BaseLayer] = List(
     ActivationLayer(
       NotInRune, Tier, Signature, Tier, NotInRune,
       Tier, Tier, Tier, Tier, Tier,
@@ -28,13 +30,25 @@ object Teleporter extends RunePattern {
       NotInRune, Tier, Signature, Tier, NotInRune
     )
   )
+  // format: on
 }
 
-case class Teleporter(center: Location, creator: Player, direction: Direction, rotation: Matrix4, pattern: Pattern) extends Rune with Tiered with ConsumableBlocks with Linkable {
-  override def validateSignature: Option[String] = {
-    Option.when(signatureIsEmpty)("Signature is empty!")
-      .orWhen(signatureContains(tierMaterial))(s"${tierMaterial.name} can't be used on this Teleporter because it is the same as the tier used in rune.")
-  }
+case class Teleporter(
+  center: Location,
+  creator: Player,
+  direction: Direction,
+  rotation: Matrix4,
+  pattern: Pattern
+) extends Rune
+    with Tiered
+    with ConsumableBlocks
+    with Linkable {
+  override def validateSignature: Option[String] =
+    Option
+      .when(signatureIsEmpty)("Signature is empty!")
+      .orWhen(signatureContains(tierMaterial))(
+        s"${tierMaterial.name} can't be used on this Teleporter because it is the same as the tier used in rune."
+      )
 
   var finalTarget: Position[Double] = _
 
@@ -51,13 +65,16 @@ case class Teleporter(center: Location, creator: Player, direction: Direction, r
         }
         .getOrElse(Left("The way is barred on the other side!"))
 
-    def calculateFinalTarget(bouncedTarget: Location, targetWaypoint: GenericWaypoint): Position[Double] = {
+    def calculateFinalTarget(
+      bouncedTarget: Location,
+      targetWaypoint: GenericWaypoint
+    ): Position[Double] = {
       val blockCenterOffset: Vector3[Double] =
         targetWaypoint.direction match {
-          case Up | Down => Vector3[Double](0.5, 0, 0.5)
-          case East | West => Vector3[Double](0, 0.5, 0.5)
+          case Up | Down     => Vector3[Double](0.5, 0, 0.5)
+          case East | West   => Vector3[Double](0, 0.5, 0.5)
           case North | South => Vector3[Double](0.5, 0.5, 0)
-          case _ => Vector3[Double](0, 0, 0)
+          case _             => Vector3[Double](0, 0, 0)
         }
       bouncedTarget.toDoublePosition + blockCenterOffset
     }
@@ -80,7 +97,9 @@ case class Teleporter(center: Location, creator: Player, direction: Direction, r
     }
 
     for {
-      targetWaypoint <- EitherT.fromEither[IO](Waypoint.waypoints.get(signature).toRight("Can't find your destination."))
+      targetWaypoint <- EitherT.fromEither[IO](
+        Waypoint.waypoints.get(signature).toRight("Can't find your destination.")
+      )
       _ <- EitherT.fromEither[IO](checkTier(targetWaypoint).toLeft(()))
       bouncedTarget <- EitherT.fromEither[IO](bounceTarget(targetWaypoint))
       finalTarget = calculateFinalTarget(bouncedTarget, targetWaypoint)

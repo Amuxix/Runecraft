@@ -20,7 +20,7 @@ sealed trait BaseLayer {
 case class Layer(elements: Element*) extends BaseLayer
 case class ActivationLayer(elements: Element*) extends BaseLayer
 
-object Pattern {
+/*object Pattern {
   def isMirrored(layer: BaseLayer, width: Int): Boolean = {
     val layerArray: Seq[Seq[Element]] = layer.toElementsArray(width)
     val height = layerArray.size
@@ -67,7 +67,7 @@ object Pattern {
       }
     }
   }
-}
+}*/
 
 
 /**
@@ -79,7 +79,7 @@ object Pattern {
   * @param directional True when the rune has to be built in a certain direction
   * @param buildableOnCeiling True if this rune can have its layer order inverted to be activated looking from ground to ceiling
   */
-abstract class Pattern private(activationLayer: Int, elements: Seq[Seq[Seq[Element]]], hasTwoMirroredAxis: Boolean, verticality: Boolean, directional: Boolean,
+abstract class Pattern (activationLayer: Int, elements: Seq[Seq[Seq[Element]]], hasTwoMirroredAxis: Boolean, verticality: Boolean, directional: Boolean,
                        buildableOnCeiling: Boolean, activatesWith: PartialFunction[Option[Item], Boolean]) extends Ordered[Pattern] {
 	/* IN GAME AXIS
 		 *          Y axis

@@ -8,6 +8,10 @@ import cats.implicits._
 import me.amuxix.bukkit.Bukkit
 import me.amuxix.logging.Logger.info
 import me.amuxix.material.Recipe
+import me.amuxix.pattern.RunePattern
+import me.amuxix.runes.{Compass, RunicChest, Teleporter, TrueName}
+import me.amuxix.runes.test.{Test, Test2}
+import me.amuxix.runes.waypoints.Waypoint
 
 import scala.collection.mutable
 import scala.concurrent.ExecutionContext.global
@@ -15,6 +19,7 @@ import scala.concurrent.Future
 
 object Aethercraft {
   val defaultFailureMessage = "Some unknown force blocks you."
+  val activeRunes: Stream[RunePattern[_]] = Stream(Test, Test2, Waypoint, Teleporter, Compass, TrueName, RunicChest)
 
   var logger: Logger = _
 

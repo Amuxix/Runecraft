@@ -3,20 +3,25 @@ package me.amuxix.runes
 import cats.data.{EitherT, OptionT}
 import cats.effect.IO
 import cats.implicits._
-import me.amuxix.{Direction, Matrix4, OptionObjectOps, Player}
 import me.amuxix.block.Block
 import me.amuxix.block.Block.Location
 import me.amuxix.inventory.Item
 import me.amuxix.material.Material.{Redstone, RedstoneTorch}
 import me.amuxix.pattern._
-import me.amuxix.runes.traits.{ConsumableBlocks, Tool}
 import me.amuxix.runes.traits.enchants.{BlockBreakTrigger, Enchant}
+import me.amuxix.runes.traits.{ConsumableBlocks, Tool}
+import me.amuxix.{Direction, Matrix4, OptionObjectOps, Player}
 
 /**
   * Created by Amuxix on 01/02/2017.
   */
-object SuperTool extends RunePattern with Enchant with BlockBreakTrigger {
-  val pattern: Pattern = Pattern(SuperTool.apply, activatesWith = { case Some(item) if item.material.isTool => true })(
+object SuperTool extends RunePattern[SuperTool] with Enchant with BlockBreakTrigger {
+  override val runeCreator: RuneCreator = SuperTool.apply
+  override val activatesWith: PartialFunction[Option[Item], Boolean] = {
+    case Some(item) if item.material.isTool => true
+  }
+  // format: off
+  override val layers = List(
     ActivationLayer(
       Redstone,        NotInRune, RedstoneTorch,   NotInRune, Redstone,
       NotInRune,       Tier,      Redstone,        Tier,      NotInRune,
@@ -25,8 +30,10 @@ object SuperTool extends RunePattern with Enchant with BlockBreakTrigger {
       Redstone,        NotInRune, RedstoneTorch,   NotInRune, Redstone
     )
   )
+  // format: on
 
-  override def canEnchant(item: Item): Option[String] = Option.unless(item.material.isTool)("This rune can only be applied to tools.")
+  override def canEnchant(item: Item): Option[String] =
+    Option.unless(item.material.isTool)("This rune can only be applied to tools.")
 
   override def incompatibleEnchants: Set[Enchant] = Set.empty
 
@@ -40,16 +47,30 @@ object SuperTool extends RunePattern with Enchant with BlockBreakTrigger {
    */
 
   /** This should run the effect of the enchant and return whether to cancel the event or not */
-  override def onBlockBreak(player: Player, itemInHand: Option[Item], brokenBlock: Block): EitherT[IO, String, Boolean] = {
+  override def onBlockBreak(
+    player: Player,
+    itemInHand: Option[Item],
+    brokenBlock: Block
+  ): EitherT[IO, String, Boolean] =
     itemInHand
       .filter(_.hasRuneEnchant(SuperTool))
       .fold(EitherT.rightT[IO, String](false)) { item =>
-        brokenBlock.allNeighbours.map(_.breakUsing(player, item)).sequence
-      }
-  }
+      brokenBlock.allNeighbours
+        .traverse(_.breakUsing(player, item))
+        .map(_.head)
+        .toLeft(false)
+    }
 }
 
-case class SuperTool(center: Location, creator: Player, direction: Direction, rotation: Matrix4, pattern: Pattern) extends Rune with ConsumableBlocks with Tool {
+case class SuperTool(
+  center: Location,
+  creator: Player,
+  direction: Direction,
+  rotation: Matrix4,
+  pattern: Pattern
+) extends Rune
+    with ConsumableBlocks
+    with Tool {
 
   /**
     * Internal activate method that should contain all code to activate a rune.

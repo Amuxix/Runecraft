@@ -12,22 +12,21 @@ scalacOptions ++= Seq(
   "-explaintypes",                     // Explain type errors in more detail.
   "-feature",                          // Emit warning and location for usages of features that should be imported explicitly.
   "-language:implicitConversions",     // Explicitly enables the implicit conversions feature
-  "-language:postfixOps",     // Explicitly enables the postfix ops feature
-  "-language:higherKinds",     // Explicitly enables the higher kinded types
+  "-language:postfixOps",              // Explicitly enables the postfix ops feature
+  "-language:higherKinds",             // Explicitly enables the higher kinded types
   "-unchecked",                        // Enable additional warnings where generated code depends on assumptions.
   "-Xcheckinit",                       // Wrap field accessors to throw an exception on uninitialized access.
   "-Xfatal-warnings",                  // Fail the compilation if there are any warnings.
   "-Xfuture",                          // Turn on future language features.
   "-Ypartial-unification",             // Enable partial unification in type constructor inference
   "-Yno-adapted-args",                 // Do not adapt an argument list (either by inserting () or creating a tuple) to match the receiver.
-  "-Xlint",                            // Enables every warning. scala -Xlint:help for a list and explanation
-  "-Xlint:_,-unused",                  // Enables every warning except "unused". scala -Xlint:help for a list and explanation
+  //"-Xlint:_,-unused",                  // Enables every warning except "unused". scala -Xlint:help for a list and explanation
   "-Ywarn-dead-code",                  // Warn when dead code is identified.
   "-Ywarn-extra-implicit",             // Warn when more than one implicit parameter section is defined.
   "-Ywarn-unused:imports",             // Warn if an import selector is not referenced.
   "-Ywarn-unused:privates",            // Warn if a private member is unused.
   "-Ywarn-unused:locals",              // Warn if a local definition is unused.
-  "-Ywarn-unused:implicits",           // Warn if an implicit parameter is unused.
+  //"-Ywarn-unused:implicits",           // Warn if an implicit parameter is unused.
   "-Ywarn-unused:patvars",             // Warn if a variable bound in a pattern is unused.
   "-Ybackend-parallelism", "12",        // Maximum worker threads for backend
 )
@@ -35,7 +34,7 @@ scalacOptions ++= Seq(
 resolvers += "Spigot Repo" at "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
 val circeVersion = "0.11.1"
 libraryDependencies ++= Seq(
-  "org.bukkit" % "bukkit" % "1.13.2-R0.1-SNAPSHOT" % Provided,
+  "org.bukkit" % "bukkit" % "1.14.4-R0.1-SNAPSHOT" % Provided,
   "com.beachape" %% "enumeratum" % "1.5.13",
   "com.beachape" %% "enumeratum-circe" % "1.5.13",
   "io.circe" %% "circe-core" % circeVersion,

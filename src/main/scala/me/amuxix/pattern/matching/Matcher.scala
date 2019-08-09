@@ -6,23 +6,19 @@ import me.amuxix.inventory.Item
 import me.amuxix.logging.Logger.trace
 import me.amuxix.pattern.{Pattern, RunePattern}
 import me.amuxix.runes._
-import me.amuxix.runes.test._
-import me.amuxix.runes.waypoints.Waypoint
 
 /**
   * Created by Amuxix on 21/11/2016.
   * This is the class that knows how to look for runes in the world
   */
 object Matcher {
-  private val defaultRunePatterns: Stream[RunePattern] = Stream(Test, Test2, Waypoint, Teleporter, Compass, TrueName, RunicChest)
-
-  private var patterns: Stream[Pattern] = defaultRunePatterns.map(_.pattern)
+  private var patterns: Stream[Pattern] = Aethercraft.activeRunes.map(_.pattern)
 
   /**
     * Adds a rune with the given pattern to list of known runes
     * @param runePattern pattern of the rune to be added.
     */
-  def addRune(runePattern: RunePattern): Unit = {
+  def addRune(runePattern: RunePattern[_]): Unit = {
     patterns :+= runePattern.pattern
   }
 
@@ -31,7 +27,6 @@ object Matcher {
     */
   def lookForRunesAt(location: Location, activator: Player, direction: Direction, itemInHand: Option[Item]): Option[Rune] = {
     val possiblePatterns: Stream[Pattern] = patterns.filter(_.canBeActivatedWith(itemInHand))
-    //val possiblePatterns: Seq[Pattern] = patterns
     matchRunes(location, activator, direction, possiblePatterns)
       .orElse {
         trace("Found no runes, looking for runes with center on the adjacent block of the clicked block face")
