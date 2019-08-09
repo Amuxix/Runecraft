@@ -83,6 +83,24 @@ object Material extends CirceEnum[Material] with Enum[Material] {
 
   private val coralTier: BaseTier = T2
 
+  /*
+  Flowers
+  Grindstones
+  Jigsaw blocks
+  Lanterns
+  Lecterns
+  Looms
+  Scaffolding
+  Signs Added spruce, birch, acacia, jungle, and dark oak signs: signs now come in all different wood types.
+  Slabs
+  Smithing Tables
+  Smokers
+  Stairs
+  Stonecutters
+  Sweet berry bushes
+  Walls Added brick, andesite, diorite, granite, prismarine, stone brick, mossy stone brick, sandstone, red sandstone, nether brick, red nether brick, and end stone brick walls.
+   */
+
   //region Materials
   //@formatter:off
   object AcaciaBoat extends Material with Boat
@@ -111,7 +129,9 @@ object Material extends CirceEnum[Material] with Enum[Material] {
   object AttachedPumpkinStem extends Material(tier = T2) with Plant
   object AzureBluet extends Material(energy = 14) with Plant
   object BakedPotato extends Material with PlayerConsumable
+  object Bamboo extends Material with Fuel { override val burnTicks: Int = 50 }
   object Barrier extends Material with Solid with NoEnergy
+  object Barrel extends Material with Solid with FourRotations with Inventory with Fuel { override val burnTicks: Int = 300 }
   object BatSpawnEgg extends Material with SpawnEgg
   object Beacon extends Material with Solid
   object Bedrock extends Material with Solid with NoEnergy
@@ -119,6 +139,7 @@ object Material extends CirceEnum[Material] with Enum[Material] {
   object BeetrootPlantation extends Material with Plant
   object BeetrootSeeds extends Material(tier = T2)
   object BeetrootSoup extends Material with PlayerConsumable
+  object Bell extends Material(tier = T3) with FourRotations with Transparent
   object BirchBoat extends Material with Boat
   object BirchButton extends Material with Button
   object BirchDoor extends Material with Solid with Transparent with Door
@@ -145,6 +166,7 @@ object Material extends CirceEnum[Material] with Enum[Material] {
   object BlackTerracotta extends Material with DyedTerracotta
   object BlackWallBanner extends Material with Banner
   object BlackWool extends Material with Wool
+  object BlastFurnace extends Material with Solid with FourRotations with Inventory
   object BlazePowder extends Material
   object BlazeRod extends Material(energy = 2322) with Fuel { override val burnTicks: Int = 2400 }
   object BlazeSpawnEgg extends Material with SpawnEgg
@@ -199,13 +221,15 @@ object Material extends CirceEnum[Material] with Enum[Material] {
   object BubbleCoralFan extends Material(tier = coralTier) with CoralFan
   object BubbleCoralWallFan extends Material(tier = coralTier) with CoralWallFan
   object Bucket extends Material
+  object Campfire extends Material with Transparent with FourRotations
   object Cactus extends Material(tier = T3) with Solid with Attaches
-  object CactusGreen extends Material with Dye
+  object GreenDye extends Material with Dye
   object Cake extends Material with PlayerConsumable
   object Carrot extends Material(energy = 5498) with PlayerConsumable
   object CarrotOnAStick extends Material
   object Carrots extends Material(tier = T2) with Plant
-  object CarvedPumpkin extends Material with Solid with Rotates
+  object CartographyTable extends Material with Solid with FourRotations
+  object CarvedPumpkin extends Material with Solid with FourRotations
   object Cauldron extends Material with Solid
   object CaveAir extends Material with Air
   object CaveSpiderSpawnEgg extends Material with SpawnEgg
@@ -215,7 +239,7 @@ object Material extends CirceEnum[Material] with Enum[Material] {
   object ChainmailHelmet extends Material with Helmet
   object ChainmailLeggings extends Material with Leggings
   object Charcoal extends Material with Fuel { override val burnTicks: Int = 1600 }
-  object Chest extends Material with Solid with Rotates with Inventory with Fuel { override val burnTicks: Int = 300 }
+  object Chest extends Material with Solid with FourRotations with Inventory with Fuel { override val burnTicks: Int = 300 }
   object ChestMinecart extends Material with Inventory
   object ChickenSpawnEgg extends Material with SpawnEgg
   object ChippedAnvil extends Material with Solid with Transparent with Gravity with Inventory
@@ -247,6 +271,7 @@ object Material extends CirceEnum[Material] with Enum[Material] {
   object CommandBlockMinecart extends Material with NoEnergy
   object CommandRepeating extends Material with Solid with NoEnergy
   object Compass extends Material
+  object Composter extends Material with Solid
   object Conduit extends Material with Solid
   object CookedBeef extends Material with PlayerConsumable
   object CookedChicken extends Material with PlayerConsumable
@@ -279,7 +304,7 @@ object Material extends CirceEnum[Material] with Enum[Material] {
   object CyanWool extends Material with Wool
   object DamagedAnvil extends Material with Solid with Transparent with Gravity with Inventory
   object Dandelion extends Material(energy = 14) with Plant
-  object DandelionYellow extends Material with Dye
+  object YellowDye extends Material with Dye
   object DarkOakBoat extends Material with Boat
   object DarkOakButton extends Material with Button
   object DarkOakDoor extends Material with Solid with Transparent with Door
@@ -292,7 +317,7 @@ object Material extends CirceEnum[Material] with Enum[Material] {
   object DarkOakSapling extends Material(tier = T2) with Sapling
   object DarkOakSlab extends Material with WoodenSlab
   object DarkOakStairs extends Material with WoodenStairs
-  object DarkOakTrapdoor extends Material with Solid with Transparent with Rotates with Door
+  object DarkOakTrapdoor extends Material with Solid with Transparent with FourRotations with Door
   object DarkOakWood extends Material with Wood
   object DarkPrismarine extends Material with Solid
   object DarkPrismarineSlab extends Material with Slab
@@ -336,7 +361,7 @@ object Material extends CirceEnum[Material] with Enum[Material] {
   object DiamondSword extends Material with Usable with Sword
   object Diorite extends Material(tier = T0) with Solid
   object Dirt extends Material(tier = T0) with Solid
-  object Dispenser extends Material with Rotates with Inventory
+  object Dispenser extends Material with SixRotations with Inventory
   object DolphinSpawnEgg extends Material with SpawnEgg
   object DonkeySpawnEgg extends Material with SpawnEgg
   object DragonBreath extends Material with NoEnergy
@@ -358,7 +383,7 @@ object Material extends CirceEnum[Material] with Enum[Material] {
   object EnchantedGoldenApple extends Material with PlayerConsumable
   object EnchantingTable extends Material with Solid
   object EndCrystal extends Material
-  object EnderChest extends Material with Solid with Rotates
+  object EnderChest extends Material with Solid with FourRotations
   object EnderEye extends Material
   object EndermanSpawnEgg extends Material with SpawnEgg
   object EndermiteSpawnEgg extends Material with SpawnEgg
@@ -389,7 +414,7 @@ object Material extends CirceEnum[Material] with Enum[Material] {
   object FlintAndSteel extends Material with Durable
   object FlowerPot extends Material with Transparent
   object FrostedIce extends Material with Solid
-  object Furnace extends Material with Solid with Rotates with Inventory
+  object Furnace extends Material with Solid with FourRotations with Inventory
   object FurnaceMinecart extends Material with Inventory
   object GhastSpawnEgg extends Material with SpawnEgg
   object GhastTear extends Material(energy = 269)
@@ -471,7 +496,7 @@ object Material extends CirceEnum[Material] with Enum[Material] {
   object IronBlock extends Material with Solid
   object IronBoots extends Material with Boots
   object IronChestplate extends Material with Chestplate
-  object IronDoor extends Material with Solid with Transparent with Attaches with Rotates with Door
+  object IronDoor extends Material with Solid with Transparent with Attaches with FourRotations with Door
   object IronHelmet extends Material with Helmet
   object IronHoe extends Material with Hoe
   object IronHorseArmor extends Material(tier = T3)
@@ -499,12 +524,12 @@ object Material extends CirceEnum[Material] with Enum[Material] {
   object JungleSapling extends Material(tier = T2) with Sapling
   object JungleSlab extends Material with WoodenSlab
   object JungleStairs extends Material with WoodenStairs
-  object JungleTrapdoor extends Material with Solid with Transparent with Rotates with Door
+  object JungleTrapdoor extends Material with Solid with Transparent with FourRotations with Door
   object JungleWood extends Material with Wood
   object Kelp extends Material(14)
   object KelpPlant extends Material(14) with Plant
   object KnowledgeBook extends Material with NoEnergy
-  object Ladder extends Material with Transparent with Attaches with Rotates with Fuel { override val burnTicks: Int = 300 }
+  object Ladder extends Material with Transparent with Attaches with FourRotations with Fuel { override val burnTicks: Int = 300 }
   object LapisLazuli extends Material(tier = T4) with Dye
   object LapisLazuliBlock extends Material with Solid
   object LapisLazuliOre extends Material with Ore
@@ -517,7 +542,7 @@ object Material extends CirceEnum[Material] with Enum[Material] {
   object LeatherChestplate extends Material with Chestplate
   object LeatherHelmet extends Material with Helmet
   object LeatherLeggings extends Material with Leggings
-  object Lever extends Material with Transparent with Attaches with Rotates
+  object Lever extends Material with Transparent with Attaches with SixRotations
   object LightBlueBanner extends Material with Banner
   object LightBlueBed extends Material with Transparent with Bed
   object LightBlueCarpet extends Material with Carpet
@@ -618,7 +643,7 @@ object Material extends CirceEnum[Material] with Enum[Material] {
   object NoteBlock extends Material with Solid with Fuel { override val burnTicks: Int = 300 }
   object OakBoat extends Material with Boat
   object OakButton extends Material with Button
-  object OakDoor extends Material with Solid with Rotates with Door
+  object OakDoor extends Material with Solid with FourRotations with Door
   object OakFence extends Material with Fence
   object OakFenceGate extends Material with FenceGate
   object OakLeaves extends Material(tier = T2) with Leaves
@@ -628,7 +653,7 @@ object Material extends CirceEnum[Material] with Enum[Material] {
   object OakSapling extends Material(tier = T2) with Sapling
   object OakSlab extends Material with WoodenSlab
   object OakStairs extends Material with WoodenStairs
-  object OakTrapdoor extends Material with Solid with Transparent with Rotates with Door
+  object OakTrapdoor extends Material with Solid with Transparent with FourRotations with Door
   object OakWood extends Material with Wood
   object Observer extends Material with Solid
   object Obsidian extends Material(energy = 68) with Solid
@@ -723,7 +748,7 @@ object Material extends CirceEnum[Material] with Enum[Material] {
   object Pumpkin extends Material(tier = T3) with Solid
   object PumpkinPie extends Material with PlayerConsumable
   object PumpkinSeeds extends Material
-  object PumpkinStem extends Material(tier = T2) with Plant with Rotates
+  object PumpkinStem extends Material(tier = T2) with Plant with FiveRotations
   object PurpleBanner extends Material with Banner
   object PurpleBed extends Material with Transparent with Bed
   object PurpleCarpet extends Material with Carpet
@@ -788,7 +813,7 @@ object Material extends CirceEnum[Material] with Enum[Material] {
   object RedWool extends Material with Wool
   object Repeater extends Material
   object RoseBush extends Material(tier = T2) with DoublePlant
-  object RoseRed extends Material with Dye
+  object RedDye extends Material with Dye
   object RottenFlesh extends Material(energy = 10) with PlayerConsumable
   object Saddle extends Material(tier = T3)
   object SalmonBucket extends Material
@@ -842,7 +867,7 @@ object Material extends CirceEnum[Material] with Enum[Material] {
   object SpruceSapling extends Material(tier = T2) with Sapling
   object SpruceSlab extends Material with WoodenSlab
   object SpruceStairs extends Material with WoodenStairs
-  object SpruceTrapdoor extends Material with Solid with Transparent with Rotates with Door
+  object SpruceTrapdoor extends Material with Solid with Transparent with FourRotations with Door
   object SpruceWood extends Material with Wood
   object SquidSpawnEgg extends Material with SpawnEgg
   object Stick extends Material(energy = 31) with Fuel { override val burnTicks: Int = 100 }
@@ -852,7 +877,7 @@ object Material extends CirceEnum[Material] with Enum[Material] {
   object StoneBrick extends Material(tier = T0) with Solid
   object StoneBrickSlab extends Material with Slab
   object StoneBrickStairs extends Material with Stairs
-  object StoneButton extends Material with Transparent with Attaches with Rotates
+  object StoneButton extends Material with Transparent with Attaches with SixRotations
   object StoneHoe extends Material with Hoe
   object StonePickaxe extends Material with Pickaxe
   object StonePressurePlate extends Material with Transparent with Attaches
@@ -884,12 +909,12 @@ object Material extends CirceEnum[Material] with Enum[Material] {
   object TippedArrow extends Material with NoEnergy
   object TNT extends Material with Solid
   object TNTMinecart extends Material
-  object Torch extends Material with Torch with Crushable
+  object Torch extends Material with Torch with Crushable with FiveRotations*
   object TotemOfUndying extends Material(energy = 488)
-  object TrappedChest extends Material with Inventory with Solid with Rotates with Fuel { override val burnTicks: Int = 300 }
+  object TrappedChest extends Material with Inventory with Solid with FourRotations with Fuel { override val burnTicks: Int = 300 }
   object Trident extends Material(tier = T2) with Trident
   object Tripwire extends Material with Transparent with Attaches
-  object TripwireHook extends Material with Transparent with Attaches with Rotates
+  object TripwireHook extends Material with Transparent with Attaches with FourRotations
   object TropicalFish extends Material(3910) with PlayerConsumable
   object TropicalFishBucket extends Material
   object TropicalFishSpawnEgg extends Material with SpawnEgg
@@ -905,7 +930,7 @@ object Material extends CirceEnum[Material] with Enum[Material] {
   object VindicatorSpawnEgg extends Material with SpawnEgg
   object Vine extends Material(tier = T5) with Transparent with Crushable
   object VoidAir extends Material with Air
-  object WallSign extends Material with Transparent with Rotates with Sign
+  object WallSign extends Material with Transparent with FourRotations with Sign
   object WallTorch extends Material with Torch
   object Water extends Material(energy = 14) with Transparent with Liquid
   object WaterBucket extends Material

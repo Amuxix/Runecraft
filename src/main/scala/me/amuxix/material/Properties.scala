@@ -11,8 +11,9 @@ private[material] object Properties {
   trait Solid extends Block
   trait Inventory extends Solid
 
-  trait Rotates
+  sealed trait Rotates
   trait FourRotations extends Rotates
+  trait FiveRotations extends Rotates //This is used by items that can be placed on floor and walls but not ceiling
   trait SixRotations extends Rotates
 
   /**

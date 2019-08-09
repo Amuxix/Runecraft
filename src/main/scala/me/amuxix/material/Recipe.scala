@@ -168,7 +168,7 @@ object Recipe {
     Recipe(NonEmptyList(ShulkerBox, List(OrangeDye)), OrangeShulkerBox),
     Recipe(NonEmptyList(ShulkerBox, List(MagentaDye)), MagentaShulkerBox),
     Recipe(NonEmptyList(ShulkerBox, List(LightBlueDye)), LightBlueShulkerBox),
-    Recipe(NonEmptyList(ShulkerBox, List(DandelionYellow)), YellowShulkerBox),
+    Recipe(NonEmptyList(ShulkerBox, List(YellowDye)), YellowShulkerBox),
     Recipe(NonEmptyList(ShulkerBox, List(LimeDye)), LimeShulkerBox),
     Recipe(NonEmptyList(ShulkerBox, List(PinkDye)), PinkShulkerBox),
     Recipe(NonEmptyList(ShulkerBox, List(GrayDye)), GrayShulkerBox),
@@ -177,7 +177,7 @@ object Recipe {
     Recipe(NonEmptyList(ShulkerBox, List(PurpleDye)), PurpleShulkerBox),
     Recipe(NonEmptyList(ShulkerBox, List(LapisLazuli)), BlueShulkerBox),
     Recipe(NonEmptyList(ShulkerBox, List(CocoaBeans)), BrownShulkerBox),
-    Recipe(NonEmptyList(ShulkerBox, List(CactusGreen)), GreenShulkerBox),
+    Recipe(NonEmptyList(ShulkerBox, List(GreenDye)), GreenShulkerBox),
     Recipe(NonEmptyList(ShulkerBox, List(RoseBush)), RedShulkerBox),
     Recipe(NonEmptyList(ShulkerBox, List(InkSac)), BlackShulkerBox),
     //endregion

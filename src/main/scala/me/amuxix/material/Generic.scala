@@ -103,7 +103,7 @@ private[material] object Generic {
   trait Fence extends Generic with Solid with Transparent with Fuel { this: Material =>
     override val burnTicks: Int = 300
   }
-  trait FenceGate extends Generic with Fence with Rotates { this: Material => }
+  trait FenceGate extends Generic with Fence with FourRotations { this: Material => }
   trait Glass extends Generic with Solid with Transparent
   trait GlassPane extends Glass
   trait Leaves extends Generic with Solid with Transparent with Crushable
@@ -123,7 +123,7 @@ private[material] object Generic {
   trait WoodenStairs extends Stairs with Fuel { this: Material =>
     override val burnTicks: Int = 300
   }
-  trait Torch extends Generic with Transparent with Attaches with Rotates
+  trait Torch extends Generic with Transparent with Attaches with FiveRotations
   trait Wool extends Generic with Solid with Fuel { this: Material =>
     override val burnTicks: Int = 100
   }
@@ -146,8 +146,8 @@ private[material] object Generic {
 
   //TODO: Add filters for these new generics
   //Todo Add FIsh
-  trait Stairs extends Generic with Solid with Rotates
-  trait Button extends Generic with Transparent with Rotates with Fuel { this: Material =>
+  trait Stairs extends Generic with Solid with SixRotations
+  trait Button extends Generic with Transparent with SixRotations with Fuel { this: Material =>
     override val burnTicks: Int = 100
   }
   trait WoodenPressurePlate extends Generic with Transparent with Attaches with Fuel { this: Material =>
@@ -156,13 +156,13 @@ private[material] object Generic {
   trait WoodenTool extends Generic with Fuel { this: Material =>
     override val burnTicks: Int = 200
   }
-  trait WoodenTrapDoor extends Generic with Solid with Transparent with Rotates with Door { this: Material => }
+  trait WoodenTrapDoor extends Generic with Solid with Transparent with FourRotations with Door { this: Material => }
   trait SpawnEgg extends Generic with Consumable with NoEnergy
 
   trait Coral extends Generic with Transparent with Attaches with Crushable
   trait CoralBlock extends Generic with Solid
-  trait CoralFan extends Generic with Transparent with Attaches with Rotates with Crushable
-  trait CoralWallFan extends Generic with Transparent with Attaches with Rotates with Crushable
+  trait CoralFan extends Generic with Transparent with Attaches with FourRotations with Crushable
+  trait CoralWallFan extends Generic with Transparent with Attaches with FourRotations with Crushable
   trait Ore extends Generic with Solid
   trait Air extends Generic with Transparent with Crushable with NoEnergy
 }
