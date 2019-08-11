@@ -2,11 +2,11 @@ package me.amuxix.runes
 
 import cats.data.EitherT
 import cats.effect.IO
-import me.amuxix.block.Block.Location
 import me.amuxix.block.blocks.Chest
 import me.amuxix.inventory.Item
 import me.amuxix.material.Material.{Chest, MagmaBlock, Obsidian}
 import me.amuxix.pattern._
+import me.amuxix.position.BlockPosition
 import me.amuxix.{Direction, Energy, Matrix4, Player}
 
 object RunicChest extends RunePattern[RunicChest] {
@@ -25,7 +25,7 @@ object RunicChest extends RunePattern[RunicChest] {
 }
 
 case class RunicChest(
-  center: Location,
+  center: BlockPosition,
   creator: Player,
   direction: Direction,
   rotation: Matrix4,

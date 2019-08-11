@@ -4,13 +4,13 @@ import cats.data.{EitherT, OptionT}
 import cats.effect.IO
 import cats.implicits._
 import me.amuxix.block.Block
-import me.amuxix.block.Block.Location
 import me.amuxix.inventory.Item
 import me.amuxix.material.Material.{Redstone, RedstoneTorch}
 import me.amuxix.pattern._
+import me.amuxix.position.BlockPosition
 import me.amuxix.runes.traits.enchants.{BlockBreakTrigger, Enchant}
 import me.amuxix.runes.traits.{ConsumableBlocks, Tool}
-import me.amuxix.{Direction, Matrix4, OptionObjectOps, Player}
+import me.amuxix.{Direction, Matrix4, Player}
 
 /**
   * Created by Amuxix on 01/02/2017.
@@ -21,7 +21,7 @@ object SuperTool extends RunePattern[SuperTool] with Enchant with BlockBreakTrig
     case Some(item) if item.material.isTool => true
   }
   // format: off
-  override val layers = List(
+  override val layers: List[ActivationLayer] = List(
     ActivationLayer(
       Redstone,        NotInRune, RedstoneTorch,   NotInRune, Redstone,
       NotInRune,       Tier,      Redstone,        Tier,      NotInRune,
@@ -63,7 +63,7 @@ object SuperTool extends RunePattern[SuperTool] with Enchant with BlockBreakTrig
 }
 
 case class SuperTool(
-  center: Location,
+  center: BlockPosition,
   creator: Player,
   direction: Direction,
   rotation: Matrix4,

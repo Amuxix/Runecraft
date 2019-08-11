@@ -2,16 +2,16 @@ package me.amuxix.runes
 
 import cats.data.EitherT
 import cats.effect.IO
+import me.amuxix._
 import me.amuxix.block.Block
-import me.amuxix.block.Block.Location
 import me.amuxix.bukkit.inventory.Item
 import me.amuxix.inventory.Item
 import me.amuxix.inventory.items.PlayerHead
 import me.amuxix.material.Material.{Fire, PlayerHead => PlayerHeadMaterial}
 import me.amuxix.pattern._
+import me.amuxix.position.BlockPosition
 import me.amuxix.runes.traits.ConsumableBlocks
 import me.amuxix.runes.traits.enchants.{BlockPlaceTrigger, Enchant}
-import me.amuxix.{OptionObjectOps, _}
 
 /**
   * Created by Amuxix on 01/02/2017.
@@ -69,7 +69,7 @@ object TrueName extends RunePattern[TrueName] with Enchant with BlockPlaceTrigge
 }
 
 case class TrueName(
-  center: Location,
+  center: BlockPosition,
   creator: Player,
   direction: Direction,
   rotation: Matrix4,

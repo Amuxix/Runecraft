@@ -1,7 +1,8 @@
 package me.amuxix
 
-import io.circe.generic.semiauto.{deriveEncoder, deriveDecoder}
+import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.{Decoder, Encoder}
+import me.amuxix.position.Vector3
 import org.bukkit.block.BlockFace
 
 /**

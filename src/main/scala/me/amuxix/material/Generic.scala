@@ -74,10 +74,8 @@ private[material] object Generic {
   trait Helmet extends Armor
   trait Leggings extends Armor
 
-  sealed trait Weapon extends Generic with Durable
-  trait Bow extends Weapon
+  trait Weapon extends Generic with Durable
   trait Sword extends Weapon
-  trait Trident extends Weapon
 
   trait Slab extends Generic with Solid
   trait WoodenSlab extends Slab with Fuel { this: Material =>
@@ -137,6 +135,7 @@ private[material] object Generic {
   trait Sign extends Generic with Fuel { this: Material =>
     override val burnTicks: Int = 200
   }
+  trait WallSign extends Sign with Transparent with FourRotations { this: Material => }
   trait Dye extends Generic
   trait Bed extends Generic
 
@@ -145,7 +144,7 @@ private[material] object Generic {
   trait ShulkerBox extends Generic
 
   //TODO: Add filters for these new generics
-  //Todo Add FIsh
+  //TODO: Add FIsh
   trait Stairs extends Generic with Solid with SixRotations
   trait Button extends Generic with Transparent with SixRotations with Fuel { this: Material =>
     override val burnTicks: Int = 100
@@ -165,4 +164,6 @@ private[material] object Generic {
   trait CoralWallFan extends Generic with Transparent with Attaches with FourRotations with Crushable
   trait Ore extends Generic with Solid
   trait Air extends Generic with Transparent with Crushable with NoEnergy
+  trait Wall extends Generic with Transparent
+  trait HorseArmor extends Generic
 }

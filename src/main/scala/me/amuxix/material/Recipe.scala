@@ -25,7 +25,7 @@ object Recipe {
     */
   private def slabRecipe(blocks: NonEmptyList[Material], slab: Material with Slab): Recipe =
     Recipe(NonEmptyList(blocks, List(blocks, blocks)), slab, 6, requiresFuel = false)
-  private val energyReceipes = Set(
+  private val energyRecipes = Set(
     //region Ores
     Recipe(Coal, CoalOre, 1 / Configuration.oreMultiplier),
     Recipe(LapisLazuli, LapisLazuliOre, 1 / (6 * Configuration.oreMultiplier)),
@@ -36,7 +36,7 @@ object Recipe {
     //endregion
     //region Misc
     Recipe(Redstone, RedstoneWire, 1 / Configuration.craftingMultiplier),
-    Recipe(Sign, WallSign, 1 / Configuration.craftingMultiplier),
+    //Recipe(Sign, WallSign, 1 / Configuration.craftingMultiplier),
     Recipe(Torch, WallTorch, 1 / Configuration.craftingMultiplier),
     Recipe(RedstoneTorch, RedstoneWallTorch, 1 / Configuration.craftingMultiplier),
     Recipe(Dirt, Farmland),
@@ -207,7 +207,7 @@ object Recipe {
     //endregion
   )
 
-  val recipes: Set[Recipe] = Recipes.bukkitRecipes ++ energyReceipes
+  val recipes: Set[Recipe] = Recipes.bukkitRecipes ++ energyRecipes
 }
 
 case class Recipe(ingredients: NonEmptyList[NonEmptyList[Material]], result: Material, craftedAmount: Double, requiresFuel: Boolean) {

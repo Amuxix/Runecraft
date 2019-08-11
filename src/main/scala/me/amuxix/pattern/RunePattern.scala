@@ -1,17 +1,31 @@
 package me.amuxix.pattern
 
-import me.amuxix.block.Block.Location
 import me.amuxix.inventory.Item
 import me.amuxix.pattern.RunePattern.isMirrored
+import me.amuxix.position.BlockPosition
 import me.amuxix.runes.Rune
 import me.amuxix.{Direction, Matrix4, Named, Player}
+
+/*import scala.reflect.runtime.{currentMirror => cm}
+import scala.reflect.runtime.universe.TypeTag
+import scala.util.Try*/
 
 /**
   * Created by Amuxix on 01/12/2016.
   */
 trait RunePattern[R <: Rune] extends Named {
-  type RuneCreator = (Location, Player, Direction, Matrix4, Pattern) => R
+  type RuneCreator = (BlockPosition, Player, Direction, Matrix4, Pattern) => R
+
+/*  def companionOf[T, CT](implicit tag: TypeTag[T]): CT = {
+    Try[CT] {
+      val companionModule = tag.tpe.typeSymbol.companion.asModule
+      cm.reflectModule(companionModule).instance.asInstanceOf[CT]
+    }
+    }.getOrElse(throw new RuntimeException(s"Could not get companion object for type ${tag.tpe}"))*/
+
   val runeCreator: RuneCreator
+  def apply(location: BlockPosition, player: Player, direction: Direction, rotation: Matrix4, pattern: Pattern): R
+
   val width: Option[Int] = None
   val verticality: Boolean = false
   val directional: Boolean = false
@@ -51,7 +65,7 @@ trait RunePattern[R <: Rune] extends Named {
       throw new Exception("At least a layer in the pattern does not form a rectangle!")
     }
     override protected[pattern] def createRune(
-      center: Location,
+      center: BlockPosition,
       creator: Player,
       direction: Direction,
       rotation: Matrix4

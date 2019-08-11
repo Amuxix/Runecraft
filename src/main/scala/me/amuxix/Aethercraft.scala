@@ -19,7 +19,7 @@ import scala.concurrent.Future
 
 object Aethercraft {
   val defaultFailureMessage = "Some unknown force blocks you."
-  val activeRunes: Stream[RunePattern[_]] = Stream(Test, Test2, Waypoint, Teleporter, Compass, TrueName, RunicChest)
+  val activeRunes: LazyList[RunePattern[_]] = LazyList(Test, Test2, Waypoint, Teleporter, Compass, TrueName, RunicChest)
 
   var logger: Logger = _
 

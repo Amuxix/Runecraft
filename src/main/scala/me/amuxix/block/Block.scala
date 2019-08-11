@@ -4,13 +4,12 @@ import cats.data.OptionT
 import cats.effect.IO
 import io.circe.{Decoder, Encoder}
 import me.amuxix._
-import me.amuxix.block.Block.Location
 import me.amuxix.bukkit.block.{Block => BBlock}
 import me.amuxix.inventory.Item
 import me.amuxix.material.Material
+import me.amuxix.position.{BlockPosition, Vector3}
 
 object Block {
-  type Location = Position[Int]
   implicit val encodeBlock: Encoder[Block] = Encoder.forProduct2("location", "material")(b =>
     (b.location, b.material)
   )
@@ -18,7 +17,7 @@ object Block {
 }
 
 trait Block extends Consumable {
-  val location: Location
+  val location: BlockPosition
   var material: Material
 
   def setMaterial(material: Material): OptionT[IO, String]
@@ -34,10 +33,10 @@ trait Block extends Consumable {
   /**
     * Attempts to move this block to the target location.
     *
-    * @param target Location where the block should be moved to.
+    * @param target BlockPosition where the block should be moved to.
     * @return true if the move was successful, false otherwise.
     */
-  def moveTo(target: Location, player: Player): OptionT[IO, String]
+  def moveTo(target: BlockPosition, player: Player): OptionT[IO, String]
 
   /**
     * Checks if the player can move this block to the target location, it check if the block can be destroyed at
@@ -46,7 +45,7 @@ trait Block extends Consumable {
     * @param player Player who triggered the move
     * @return true if the player can move this block, false otherwise
     */
-  def canMoveTo(target: Location, player: Player): Option[String]
+  def canMoveTo(target: BlockPosition, player: Player): Option[String]
 
   def directNeighbours: List[Block] = location.directNeighbours.map(_.block)
 

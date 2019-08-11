@@ -2,11 +2,11 @@ package me.amuxix.runes
 
 import cats.data.EitherT
 import cats.effect.IO
-import me.amuxix.block.Block.Location
 import me.amuxix.block.{Block, BlockUtils}
 import me.amuxix.inventory.Item
 import me.amuxix.material.Material.{Air, Glass}
 import me.amuxix.pattern._
+import me.amuxix.position.{BlockPosition, Vector3}
 import me.amuxix.runes.traits.Tiered
 import me.amuxix.{Player, _}
 
@@ -14,7 +14,7 @@ import me.amuxix.{Player, _}
   * Created by Amuxix on 02/01/2017.
   */
 object Compass extends RunePattern[Compass] {
-  override val runeCreator: RuneCreator = apply
+  override val runeCreator: RuneCreator = Compass.apply
   // format: off
   override val layers: List[BaseLayer] = List(
     ActivationLayer(
@@ -27,7 +27,7 @@ object Compass extends RunePattern[Compass] {
 }
 
 case class Compass(
-  center: Location,
+  center: BlockPosition,
   creator: Player,
   direction: Direction,
   rotation: Matrix4,

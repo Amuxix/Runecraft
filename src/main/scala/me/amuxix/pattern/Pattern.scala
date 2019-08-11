@@ -2,10 +2,10 @@ package me.amuxix.pattern
 
 import me.amuxix._
 import me.amuxix.block.Block
-import me.amuxix.block.Block.Location
 import me.amuxix.inventory.Item
 import me.amuxix.material.Material
 import me.amuxix.pattern.matching.BoundingCube
+import me.amuxix.position.{BlockPosition, Vector3}
 import me.amuxix.runes.Rune
 
 /**
@@ -13,9 +13,7 @@ import me.amuxix.runes.Rune
   */
 sealed trait BaseLayer {
   def elements: Seq[Element]
-  def toElementsArray(width: Int): Seq[Seq[Element]] = {
-    elements.grouped(width).toSeq
-  }
+  def toElementsArray(width: Int): Seq[Seq[Element]] = elements.grouped(width).toSeq
 }
 case class Layer(elements: Element*) extends BaseLayer
 case class ActivationLayer(elements: Element*) extends BaseLayer
@@ -99,7 +97,7 @@ abstract class Pattern (activationLayer: Int, elements: Seq[Seq[Seq[Element]]], 
   val volume: Int = height * width * depth
 	val patternMaterials: Set[Material] = elements.flatten.flatten.collect { case m: Material => m }.toSet //Set of materials the rune contains
 
-  protected[pattern] def createRune(center: Location, creator: Player, direction: Direction, rotation: Matrix4): Rune
+  protected[pattern] def createRune(center: BlockPosition, creator: Player, direction: Direction, rotation: Matrix4): Rune
 
 
   /**
@@ -160,15 +158,15 @@ abstract class Pattern (activationLayer: Int, elements: Seq[Seq[Seq[Element]]], 
     val zero = Vector3(0, 0, 0)
     for {
       //This order ensures the first line checked is the northern most on the lowest layer
-      layer <- Stream.range(0, height) //Y
-      block <- Stream.range(0, width) //Z
-      line <- Stream.range(0, depth) //X
+      layer <- LazyList.range(0, height) //Y
+      block <- LazyList.range(0, width) //Z
+      line <- LazyList.range(0, depth) //X
       element = elements(layer)(block)(line)
       offset = rotation.rotateAbout(zero)(Vector3(line, layer, block) - center)
     } yield offset -> element
   }
 
-  private def superimposition(rotation: Matrix4, center: Vector3[Int], world: BlockAt, filter: Element => Boolean = _ => true): Stream[(Element, Block)] =
+  private def superimposition(rotation: Matrix4, center: Vector3[Int], world: BlockAt, filter: Element => Boolean = _ => true): LazyList[(Element, Block)] =
     centerOffsets(rotation).collect {
       case (offset, element) if filter(element) => element -> world.blockAt(center + offset)
     }
@@ -185,7 +183,7 @@ abstract class Pattern (activationLayer: Int, elements: Seq[Seq[Seq[Element]]], 
     *     meaning they must be different from all specific materials, choice for each [[MaterialChoice]] and material used for tier
     */
   private def find(boundingCube: BoundingCube, rotationMatrix: Matrix4): Option[Matrix4] = {
-    val superimposed: Stream[(Element, Material)] = superimposition(rotationMatrix, boundingCube.center, boundingCube).map {
+    val superimposed: LazyList[(Element, Material)] = superimposition(rotationMatrix, boundingCube.center, boundingCube).map {
       case (element, block) => element -> block.material
     }
 
@@ -214,18 +212,18 @@ abstract class Pattern (activationLayer: Int, elements: Seq[Seq[Seq[Element]]], 
     error.toLeft(rotationMatrix).toOption
   }
 
-  def nonSpecialBlocks(rotation: Matrix4, center: Location): Stream[Block] = superimposition(rotation, center.coordinates, center.world, {
+  def nonSpecialBlocks(rotation: Matrix4, center: BlockPosition): LazyList[Block] = superimposition(rotation, center.coordinates, center.world, {
     case _: Material => true
     case _: MaterialChoice => true
     case _ => false
     }).map(_._2)
 
-  def specialBlocks(rotation: Matrix4, center: Location, element: Element): Stream[Block] = superimposition(rotation, center.coordinates, center.world, {
+  def specialBlocks(rotation: Matrix4, center: BlockPosition, element: Element): LazyList[Block] = superimposition(rotation, center.coordinates, center.world, {
     case `element` => true
     case _ => false
   }).map(_._2)
 
-  def allRuneBlocks(rotation: Matrix4, center: Location): Stream[Block] = superimposition(rotation, center.coordinates, center.world, {
+  def allRuneBlocks(rotation: Matrix4, center: BlockPosition): LazyList[Block] = superimposition(rotation, center.coordinates, center.world, {
     case `NotInRune` => false
     case _ => true
   }).map(_._2)

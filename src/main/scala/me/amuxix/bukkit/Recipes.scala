@@ -8,7 +8,7 @@ import org.bukkit.inventory.RecipeChoice.MaterialChoice
 import org.bukkit.inventory.{Recipe => _, _}
 import org.bukkit.inventory.{ItemStack => BukkitItemStack}
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 object Recipes {
   implicit class MaterialChoiceOps(materialChoice: MaterialChoice) {

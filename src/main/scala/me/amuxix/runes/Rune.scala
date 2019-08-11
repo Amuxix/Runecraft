@@ -4,17 +4,17 @@ import cats.data.EitherT
 import cats.effect.IO
 import me.amuxix._
 import me.amuxix.block.Block
-import me.amuxix.block.Block.Location
 import me.amuxix.inventory.Item
 import me.amuxix.inventory.items.PlayerHead
 import me.amuxix.logging.Logger.info
 import me.amuxix.pattern._
+import me.amuxix.position.BlockPosition
 
 /**
   * Created by Amuxix on 22/11/2016.
   */
 abstract class Rune extends Named {
-  val center: Location
+  val center: BlockPosition
   val creator: Player
   val direction: Direction
   val rotation: Matrix4
@@ -43,10 +43,8 @@ abstract class Rune extends Named {
     */
   val activator: Player = {
     val owner = for {
-      helmet <- creator.helmet
-      if shouldUseTrueName
-      playerHead = helmet.asInstanceOf[PlayerHead]
-      if playerHead.hasRuneEnchant(TrueName)
+      playerHead <- creator.helmet.map(_.asInstanceOf[PlayerHead])
+      if shouldUseTrueName && playerHead.hasRuneEnchant(TrueName)
       owner <- playerHead.owner
     } yield owner
     owner.getOrElse(creator)
@@ -81,9 +79,9 @@ abstract class Rune extends Named {
 
   protected def logRuneActivation: IO[Unit] = info(s"${activator.name} activated ${if ("aeiouy".contains(name.head)) "an" else "a"} $name at $center")
 
-  protected def allRuneBlocks: Stream[Block] = pattern.allRuneBlocks(rotation, center)
+  protected def allRuneBlocks: LazyList[Block] = pattern.allRuneBlocks(rotation, center)
 
-  protected def filteredRuneBlocksByElement(element: Element): Stream[Block] = pattern.specialBlocks(rotation, center, element)
+  protected def filteredRuneBlocksByElement(element: Element): LazyList[Block] = pattern.specialBlocks(rotation, center, element)
 
-  protected def nonSpecialBlocks: Stream[Block] = pattern.nonSpecialBlocks(rotation, center)
+  protected def nonSpecialBlocks: LazyList[Block] = pattern.nonSpecialBlocks(rotation, center)
 }

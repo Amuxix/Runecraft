@@ -3,12 +3,12 @@ package me.amuxix.runes
 import cats.data.EitherT
 import cats.effect.IO
 import me.amuxix._
-import me.amuxix.block.Block.Location
 import me.amuxix.bukkit.Configuration.{maxBlocksBouncedByTeleporter => maxDistance}
 import me.amuxix.inventory.Item
 import me.amuxix.logging.Logger.info
 import me.amuxix.material.Material.{ChorusFlower, ChorusPlant}
 import me.amuxix.pattern._
+import me.amuxix.position.{BlockPosition, EntityPosition, Position, Vector3}
 import me.amuxix.runes.traits._
 import me.amuxix.runes.waypoints.{GenericWaypoint, Waypoint}
 
@@ -34,7 +34,7 @@ object Teleporter extends RunePattern[Teleporter] {
 }
 
 case class Teleporter(
-  center: Location,
+  center: BlockPosition,
   creator: Player,
   direction: Direction,
   rotation: Matrix4,
@@ -56,8 +56,8 @@ case class Teleporter(
 
   override protected def onActivate(activationItem: Option[Item]): EitherT[IO, String, Boolean] = {
     /** Location where this teleport will teleport to. Warns rune activator is cannot find a location */
-    def bounceTarget(target: GenericWaypoint): Either[String, Location] =
-      (1 to maxDistance).toStream
+    def bounceTarget(target: GenericWaypoint): Either[String, BlockPosition] =
+      (1 to maxDistance).to(LazyList)
         .map(target.center + target.direction * _)
         .collectFirst {
           case possibleTarget if possibleTarget.block.material.isSolid == false && possibleTarget.canFitPlayer =>
@@ -66,9 +66,9 @@ case class Teleporter(
         .getOrElse(Left("The way is barred on the other side!"))
 
     def calculateFinalTarget(
-      bouncedTarget: Location,
+      bouncedTarget: BlockPosition,
       targetWaypoint: GenericWaypoint
-    ): Position[Double] = {
+    ): EntityPosition = {
       val blockCenterOffset: Vector3[Double] =
         targetWaypoint.direction match {
           case Up | Down     => Vector3[Double](0.5, 0, 0.5)
@@ -76,7 +76,7 @@ case class Teleporter(
           case North | South => Vector3[Double](0.5, 0.5, 0)
           case _             => Vector3[Double](0, 0, 0)
         }
-      bouncedTarget.toDoublePosition + blockCenterOffset
+      bouncedTarget.toEntityPosition + blockCenterOffset
     }
 
     /**

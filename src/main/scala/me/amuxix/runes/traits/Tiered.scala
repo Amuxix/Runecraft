@@ -15,7 +15,7 @@ import me.amuxix.runes.Rune
 trait Tiered extends Rune {
   def consumeTierBlocks: List[(List[Consumable#ConsumeIO], Option[Consumable#ConsumeIO])] = tierBlocks.toList.flatMap(_.consume)
 
-  lazy val tierBlocks: Stream[Block] = filteredRuneBlocksByElement(Tier)
+  lazy val tierBlocks: LazyList[Block] = filteredRuneBlocksByElement(Tier)
 
   lazy val tierMaterial: Material = tierBlocks.head.material
 

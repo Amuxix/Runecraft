@@ -2,10 +2,10 @@ package me.amuxix.runes.test
 
 import cats.data.EitherT
 import cats.effect.IO
-import me.amuxix.block.Block.Location
 import me.amuxix.inventory.Item
 import me.amuxix.material.Material.{EndStone, Glass}
 import me.amuxix.pattern._
+import me.amuxix.position.BlockPosition
 import me.amuxix.runes.Rune
 import me.amuxix.runes.traits.ConsumableBlocks
 import me.amuxix.{Direction, Matrix4, Player}
@@ -33,7 +33,7 @@ object Test2 extends RunePattern[Test2] {
 }
 
 case class Test2(
-  center: Location,
+  center: BlockPosition,
   creator: Player,
   direction: Direction,
   rotation: Matrix4,

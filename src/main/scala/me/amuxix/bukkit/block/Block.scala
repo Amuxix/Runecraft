@@ -2,8 +2,7 @@ package me.amuxix.bukkit.block
 
 import cats.data.OptionT
 import cats.effect.IO
-import me.amuxix.block.Block.Location
-import me.amuxix.bukkit.Location.BukkitIntPositionOps
+import me.amuxix.bukkit.Location.BukkitBlockPositionOps
 import me.amuxix.bukkit.Material.{BukkitMaterialOps, MaterialOps}
 import me.amuxix.bukkit.block.blocks.Chest
 import me.amuxix.bukkit.events._
@@ -11,6 +10,7 @@ import me.amuxix.bukkit.{Player => _, block => _, _}
 import me.amuxix.inventory.{Inventory, Item}
 import me.amuxix.material.Material
 import me.amuxix.material.Material._
+import me.amuxix.position.{BlockPosition, Vector3}
 import me.amuxix.{World => _, _}
 import org.bukkit.block.BlockState
 
@@ -19,7 +19,7 @@ import scala.util._
 
 
 object Block {
-  private val blocks: Map[Material, Location => Block] = HashMap[Material, Location => Block](
+  private val blocks: Map[Material, BlockPosition => Block] = HashMap[Material, BlockPosition => Block](
     Chest -> (new Chest(_))
   )
 
@@ -29,7 +29,7 @@ object Block {
     * @param material Material at the given location
     * @return A block of a specific type if a type for the given material exists or a generic block otherwise
     */
-  def apply(location: Location, material: Material): Block =
+  def apply(location: BlockPosition, material: Material): Block =
     //This lookups the constructor of the block at the blocks map, returning that or a default constructor to create a generic block
     blocks.getOrElse(material, new Block(_, material))(location)
 
@@ -38,7 +38,7 @@ object Block {
   }
 }
 
-private[bukkit] class Block(val location: Location, var material: Material) extends block.Block with BukkitForm[BlockState] {
+private[bukkit] class Block(val location: BlockPosition, var material: Material) extends block.Block with BukkitForm[BlockState] {
   protected val state: BlockState = location.world.asInstanceOf[World].world.getBlockAt(location.x, location.y, location.z).getState
 
   override def setMaterial(material: Material): OptionT[IO, String] = OptionT.fromOption[IO]{
@@ -61,7 +61,7 @@ private[bukkit] class Block(val location: Location, var material: Material) exte
     * @param target Location where the block should be moved to.
     * @return true if the move was successful, false otherwise.
     */
-  override def moveTo(target: Location, player: Player): OptionT[IO, String] =
+  override def moveTo(target: BlockPosition, player: Player): OptionT[IO, String] =
       OptionT.fromOption[IO](canMoveTo(target, player)).orElse {
       val moveInventory: OptionT[IO, String] = this match {
         case inv: Inventory =>
@@ -97,7 +97,7 @@ private[bukkit] class Block(val location: Location, var material: Material) exte
     * @param player Player who triggered the move
     * @return true if the player can move this block, false otherwise
     */
-  override def canMoveTo(target: Location, player: Player): Option[String] = {
+  override def canMoveTo(target: BlockPosition, player: Player): Option[String] = {
     val targetBlock = target.block.asInstanceOf[Block]
     Option.flatWhen(targetBlock.material.isCrushable) {
       val canBuild = new CanBuild(targetBlock, player, state.getBlockData)

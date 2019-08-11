@@ -13,7 +13,7 @@ import me.amuxix.bukkit.inventory.Item.enchantNameSuffix
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.collection.immutable.HashMap
 
 /**

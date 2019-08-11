@@ -3,9 +3,9 @@ package me.amuxix.runes.waypoints
 import cats.data.EitherT
 import cats.effect.IO
 import me.amuxix._
-import me.amuxix.block.Block.Location
 import me.amuxix.inventory.Item
 import me.amuxix.pattern._
+import me.amuxix.position.BlockPosition
 import me.amuxix.runes.Rune
 import me.amuxix.runes.traits.{Linkable, Persistent}
 import me.amuxix.runes.waypoints.WaypointSize.Medium
@@ -38,7 +38,7 @@ object Waypoint extends RunePattern[Waypoint] {
     * @return A waypoint instance with the given parameters.
     */
   def deserialize(
-    center: Location,
+    center: BlockPosition,
     creator: Player,
     direction: Direction,
     rotation: Matrix4,
@@ -54,7 +54,7 @@ object Waypoint extends RunePattern[Waypoint] {
 }
 
 case class Waypoint(
-  center: Location,
+  center: BlockPosition,
   creator: Player,
   direction: Direction,
   rotation: Matrix4,
