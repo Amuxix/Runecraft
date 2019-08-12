@@ -2,7 +2,7 @@ package me.amuxix.pattern.matching
 
 import me.amuxix._
 import me.amuxix.inventory.Item
-import me.amuxix.logging.Logger.trace
+import me.amuxix.logging.Logger.{trace, info}
 import me.amuxix.pattern.{Pattern, RunePattern}
 import me.amuxix.position.BlockPosition
 import me.amuxix.runes._
@@ -29,7 +29,7 @@ object Matcher {
     val possiblePatterns: LazyList[Pattern] = patterns.filter(_.canBeActivatedWith(itemInHand))
     matchRunes(location, activator, direction, possiblePatterns)
       .orElse {
-        trace("Found no runes, looking for runes with center on the adjacent block of the clicked block face")
+        info("Found no runes, looking for runes with center on the adjacent block of the clicked block face")
         matchRunes(location + direction, activator, direction, possiblePatterns)
       }
   }

@@ -15,6 +15,7 @@ private[material] object Properties {
   trait FourRotations extends Rotates
   trait FiveRotations extends Rotates //This is used by items that can be placed on floor and walls but not ceiling
   trait SixRotations extends Rotates
+  trait SixteenRotations extends Rotates //This is exclusive to heads placed on the floor
 
   /**
     * This represents something that is eaten/drunk either by player or animals/monsters

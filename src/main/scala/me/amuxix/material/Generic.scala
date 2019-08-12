@@ -104,9 +104,14 @@ private[material] object Generic {
   trait FenceGate extends Generic with Fence with FourRotations { this: Material => }
   trait Glass extends Generic with Solid with Transparent
   trait GlassPane extends Glass
-  trait Leaves extends Generic with Solid with Transparent with Crushable
-  trait Log extends Generic with Solid with Fuel { this: Material =>
+  trait Leaves extends Generic with Solid with Transparent with Crushable { this: Material =>
+    _energy = Some(T2.energy)
+  }
+  trait StrippedLog extends Generic with Solid with Fuel { this: Material =>
     override val burnTicks: Int = 300
+  }
+  trait Log extends StrippedLog { this: Material =>
+    _energy = Some(T2.energy)
   }
   trait Wood extends Generic with Solid with Fuel { this: Material =>
     override val burnTicks: Int = 300
@@ -116,6 +121,7 @@ private[material] object Generic {
   }
   trait Rail extends Generic with Transparent with Attaches
   trait Sapling extends Generic with Attaches with Transparent with Crushable with Fuel { this: Material =>
+    _energy = Some(T2.energy)
     override val burnTicks: Int = 100
   }
   trait WoodenStairs extends Stairs with Fuel { this: Material =>
@@ -166,4 +172,9 @@ private[material] object Generic {
   trait Air extends Generic with Transparent with Crushable with NoEnergy
   trait Wall extends Generic with Transparent
   trait HorseArmor extends Generic
+  trait BannerPattern extends Generic
+  trait PottedPlant extends Generic with Transparent
+  sealed trait Head extends Generic with Transparent
+  trait FloorHead extends Head with SixteenRotations
+  trait WallHead extends Head with FourRotations
 }

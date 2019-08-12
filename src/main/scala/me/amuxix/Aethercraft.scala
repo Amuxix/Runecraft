@@ -38,7 +38,7 @@ object Aethercraft {
     }
   }
 
-  def runTaskAsync(task: IO[Unit]): Unit = Future(task)
+  def runTaskAsync(task: IO[Unit]): Unit = Future(task.unsafeRunSync())
 
   var worlds: Map[UUID, World] = _
 
@@ -67,7 +67,7 @@ object Aethercraft {
     Serialization.reservoirsFile = reservoirsFolder
 
     val updateEnergies = IO {
-      while(Recipe.recipes.count(_.updateResultEnergy) > 0) {
+      while(Recipe.recipes.count(_.updateResultEnergy()) > 0) {
         //Keep updating energy from recipes while at least one energy value is changed.
       }
     }

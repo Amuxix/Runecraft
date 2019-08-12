@@ -73,7 +73,7 @@ resourceGenerators in Compile += Def.task {
         |version: ${version.value}-$date
         |author: Amuxix
         |main: me.amuxix.bukkit.Bukkit
-        |api-version: 1.14.4
+        |api-version: 1.14
         |""".stripMargin
   IO.write(file, pluginYml)
   Seq(file)

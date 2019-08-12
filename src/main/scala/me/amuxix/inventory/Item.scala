@@ -17,6 +17,8 @@ trait Item extends Consumable {
 
   def destroy(amount: Int): IO[Unit]
 
+  def addCurses(): IO[Unit]
+
   def enchants: Set[Enchant]
 
   def hasRuneEnchant(enchant: Enchant): Boolean

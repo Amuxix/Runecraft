@@ -41,6 +41,7 @@ object TrueName extends RunePattern[TrueName] with Enchant with BlockPlaceTrigge
     for {
       _ <- trueName.setOwner(player)
       _ <- trueName.setDisplayName(trueNameDisplayFor(player))
+      _ <- trueName.addCurses()
       _ <- trueName.addRuneEnchant(TrueName).value
     } yield trueName
   }

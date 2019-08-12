@@ -10,6 +10,7 @@ import me.amuxix.material.Material.{PlayerHead => PlayerHeadMaterial}
 import me.amuxix.runes.traits.enchants.Enchant
 import me.amuxix.{Aetherizeable, inventory}
 import me.amuxix.bukkit.inventory.Item.enchantNameSuffix
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 
@@ -71,6 +72,12 @@ protected[bukkit] class Item protected(itemStack: ItemStack) extends inventory.I
   private def addToLore(string: String): IO[Unit] = setLore(lore.fold(List(string))(_ :+ string))
 
   private def loreContains(string: String): Boolean = lore.exists(_.contains(string))
+
+  override def addCurses(): IO[Unit] = {
+    meta.addEnchant(Enchantment.BINDING_CURSE, 1, false)
+    meta.addEnchant(Enchantment.VANISHING_CURSE, 1, false)
+    setMeta(meta)
+  }
 
   override def enchants: Set[Enchant] = Enchant.enchants.filter(hasRuneEnchant).toSet
 

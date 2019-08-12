@@ -39,8 +39,8 @@ trait RunePattern[R <: Rune] extends Named {
 
   final lazy val activationLayer: Int = {
     val index = layers.indexWhere(_.isInstanceOf[ActivationLayer])
-    if (index <= 0) {
-      throw new Exception("Rune has no activation layer!")
+    if (index < 0) {
+      throw new Exception(s"$name has no activation layer!")
     } else {
       index
     }
@@ -51,18 +51,18 @@ trait RunePattern[R <: Rune] extends Named {
       if (sqrt.isValidInt) {
         sqrt.toInt
       } else {
-        throw new Exception("Rune has invalid width!")
+        throw new Exception(s"$name has invalid width!")
       }
-    case Some(width) if width % 2 == 0 => throw new Exception("Rune width needs to be odd!")
+    case Some(width) if width % 2 == 0 => throw new Exception(s"$name width needs to be odd!")
     case Some(width) => width
   }
 
-  private val hasTwoMirroredAxis = layers.forall(isMirrored(_, finalWidth))
-  private val elements = layers.map(_.toElementsArray(finalWidth))
+  private lazy val hasTwoMirroredAxis = layers.forall(isMirrored(_, finalWidth))
+  private lazy val elements = layers.map(_.toElementsArray(finalWidth))
 
   final lazy val pattern: Pattern = new Pattern(activationLayer, elements, hasTwoMirroredAxis, verticality, directional, buildableOnCeiling, activatesWith) {
     if (layers.exists(_.elements.size % finalWidth != 0)) {
-      throw new Exception("At least a layer in the pattern does not form a rectangle!")
+      throw new Exception(s"At least a layer in the pattern does not form a rectangle in rune $name!")
     }
     override protected[pattern] def createRune(
       center: BlockPosition,
