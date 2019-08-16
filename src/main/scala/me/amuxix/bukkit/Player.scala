@@ -11,7 +11,7 @@ import me.amuxix.bukkit.inventory.PlayerInventory.BukkitInventoryOps
 import me.amuxix.bukkit.inventory.{Item, PlayerInventory}
 import me.amuxix.position.EntityPosition
 import org.bukkit.entity.{Player => BPlayer}
-import org.bukkit.{ChatColor, OfflinePlayer}
+import org.bukkit.{ChatColor, GameMode, OfflinePlayer}
 
 /**
   * Created by Amuxix on 22/11/2016.
@@ -65,9 +65,23 @@ private[bukkit] case class Player(uuid: UUID) extends Entity with amuxix.Player 
 
   override def helmet: Option[Item] = inventory.flatMap(_.helmet)
 
-  override def itemInMainHand: Option[Item] = inventory.flatMap(_.itemInMainHand)
+  override def itemInMainHand: Option[Item] = inventory.map(_.itemInMainHand)
 
-  override def itemInOffHand: Option[Item] = inventory.flatMap(_.itemInOffHand)
+  override def itemInOffHand: Option[Item] = inventory.map(_.itemInOffHand)
+
+  private def gameMode: Option[GameMode] = player.toOption.map(_.getGameMode)
+
+  /**
+    * Check if player is online and in creative mode
+    * @return True if player is online and in creative mode, false if player is offline or not in creative mode
+    */
+  override def inCreativeMode: Boolean = gameMode.contains(GameMode.CREATIVE)
+
+  /**
+    * Check if player is online and in survival mode
+    * @return True if player is online and in survival mode, false if player is offline or not in survival mode
+    */
+  override def inSurvivalMode: Boolean = gameMode.contains(GameMode.SURVIVAL)
 
   override def bukkitForm: BPlayer = player.toOption.orNull
 }

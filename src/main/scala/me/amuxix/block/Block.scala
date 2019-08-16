@@ -2,25 +2,30 @@ package me.amuxix.block
 
 import cats.data.OptionT
 import cats.effect.IO
-import io.circe.{Decoder, Encoder}
+import io.circe.Decoder.Result
+import io.circe.{Decoder, Encoder, HCursor}
+import io.circe.syntax._
 import me.amuxix._
 import me.amuxix.bukkit.block.{Block => BBlock}
 import me.amuxix.inventory.Item
 import me.amuxix.material.Material
+import me.amuxix.material.Properties.BlockProperty
 import me.amuxix.position.{BlockPosition, Vector3}
 
 object Block {
+  implicit val materialEncoder: Encoder[Material with BlockProperty] = a => (a: Material).asJson(implicitly[Encoder[Material]])
+  implicit val materialDecoder: Decoder[Material with BlockProperty] = (c: HCursor) => c.as[Material].asInstanceOf[Result[Material with BlockProperty]]
   implicit val encodeBlock: Encoder[Block] = Encoder.forProduct2("location", "material")(b =>
-    (b.location, b.material)
+    (b.location, b.material: Material)
   )
   implicit val decodeBlock: Decoder[Block] = Decoder.forProduct2("location", "material"){BBlock.apply}
 }
 
 trait Block extends Consumable {
   val location: BlockPosition
-  var material: Material
+  var material: Material with BlockProperty
 
-  def setMaterial(material: Material): OptionT[IO, String]
+  def setMaterial(material: Material with BlockProperty): OptionT[IO, String]
 
   /**
     * Attempts to move this block by the displacement vector.
@@ -47,11 +52,13 @@ trait Block extends Consumable {
     */
   def canMoveTo(target: BlockPosition, player: Player): Option[String]
 
-  def directNeighbours: List[Block] = location.directNeighbours.map(_.block)
+  lazy val faceNeighbours: List[Block] = location.faceNeighbours.map(_.block)
 
-  def indirectNeighbours: List[Block] = location.indirectNeighbours.map(_.block)
+  lazy val edgeNeighbours: List[Block] = location.edgeNeighbours.map(_.block)
 
-  def allNeighbours: List[Block] = directNeighbours ++ indirectNeighbours
+  lazy val vertexNeighbours: List[Block] = location.vertexNeighbours.map(_.block)
+
+  lazy val allNeighbours: List[Block] = faceNeighbours ++ edgeNeighbours ++ vertexNeighbours
 
   def breakUsing(player: Player, item: Item): OptionT[IO, String]
 }

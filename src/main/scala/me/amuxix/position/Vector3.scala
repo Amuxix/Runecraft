@@ -5,9 +5,9 @@ import io.circe.{Decoder, Encoder}
 import Integral.Implicits._
 
 object Vector3 {
-	implicit def Tuple32Vector3[T: Integral](tuple: (T, T, T)): Vector3[T] = {
+	/*implicit def Tuple32Vector3[T: Integral](tuple: (T, T, T)): Vector3[T] = {
 		Vector3(tuple._1, tuple._2, tuple._3)
-	}
+	}*/
 	implicit val encoder: Encoder[Vector3[Int]] = deriveEncoder
 	implicit val decoder: Decoder[Vector3[Int]] = deriveDecoder
 }

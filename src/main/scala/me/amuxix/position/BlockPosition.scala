@@ -45,9 +45,11 @@ case class BlockPosition(world: World, coordinates: Vector3[Int]) extends Positi
     state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
   }*/
 
-  def directNeighbours: List[BlockPosition] = Direction.directNeighbours.map(this + _)
+  lazy val faceNeighbours: List[BlockPosition] = Direction.faceNeighbours.map(this + _)
 
-  def indirectNeighbours: List[BlockPosition] = Direction.indirectNeighbours.map(this + _)
+  lazy val edgeNeighbours: List[BlockPosition] = Direction.edgeNeighbours.map(this + _)
 
-  def allNeighbours: List[BlockPosition] = directNeighbours ++ indirectNeighbours
+  lazy val vertexNeighbours: List[BlockPosition] = Direction.vertexNeighbours.map(this + _)
+
+  lazy val allNeighbours: List[BlockPosition] = faceNeighbours ++ edgeNeighbours ++ vertexNeighbours
 }

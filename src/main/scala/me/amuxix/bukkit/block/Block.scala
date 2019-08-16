@@ -8,7 +8,9 @@ import me.amuxix.bukkit.block.blocks.Chest
 import me.amuxix.bukkit.events._
 import me.amuxix.bukkit.{Player => _, block => _, _}
 import me.amuxix.inventory.{Inventory, Item}
+import me.amuxix.logging.Logger
 import me.amuxix.material.Material
+import me.amuxix.material.Properties.BlockProperty
 import me.amuxix.material.Material._
 import me.amuxix.position.{BlockPosition, Vector3}
 import me.amuxix.{World => _, _}
@@ -19,7 +21,7 @@ import scala.util._
 
 
 object Block {
-  private val blocks: Map[Material, BlockPosition => Block] = HashMap[Material, BlockPosition => Block](
+  private val blocks: Map[Material with BlockProperty, BlockPosition => Block] = HashMap[Material with BlockProperty, BlockPosition => Block](
     Chest -> (new Chest(_))
   )
 
@@ -29,19 +31,19 @@ object Block {
     * @param material Material at the given location
     * @return A block of a specific type if a type for the given material exists or a generic block otherwise
     */
-  def apply(location: BlockPosition, material: Material): Block =
+  def apply(location: BlockPosition, material: Material with BlockProperty): Block =
     //This lookups the constructor of the block at the blocks map, returning that or a default constructor to create a generic block
     blocks.getOrElse(material, new Block(_, material))(location)
 
   implicit class BukkitBlockOps(state: org.bukkit.block.Block) extends Aetherizeable[Block] {
-    def aetherize: Block = Block(state.getLocation.aetherize, state.getType.aetherize)
+    def aetherize: Block = Block(state.getLocation.aetherize, state.getType.aetherize.asInstanceOf[Material with BlockProperty])
   }
 }
 
-private[bukkit] class Block(val location: BlockPosition, var material: Material) extends block.Block with BukkitForm[BlockState] {
+private[bukkit] class Block(val location: BlockPosition, var material: Material with BlockProperty) extends block.Block with BukkitForm[BlockState] {
   protected val state: BlockState = location.world.asInstanceOf[World].world.getBlockAt(location.x, location.y, location.z).getState
 
-  override def setMaterial(material: Material): OptionT[IO, String] = OptionT.fromOption[IO]{
+  override def setMaterial(material: Material with BlockProperty): OptionT[IO, String] = OptionT.fromOption[IO]{
     state.setType(material.bukkitForm)
     this.material = material
     Option.unless(state.update(true))(Aethercraft.defaultFailureMessage)
@@ -109,7 +111,7 @@ private[bukkit] class Block(val location: BlockPosition, var material: Material)
     }
   }
 
-  private def replacementMaterial: Option[Material] = material match {
+  private def replacementMaterial: Option[Material with BlockProperty] = material match {
     case `Stone` => Some(Air)
     case m if m.hasEnergy && m.isAttachable => Some(Air)
     case m if m.hasEnergy && m.isSolid => Some(Stone)
@@ -158,12 +160,16 @@ private[bukkit] class Block(val location: BlockPosition, var material: Material)
     List((consumeInventory, consumeBlockMaterial))
   }
 
-
-
   override def breakUsing(player: Player, item: Item): OptionT[IO, String] =
-    OptionT.fromOption[IO](canBreak(player).orElse {
-      Option.unless(bukkitForm.getBlock.breakNaturally(item.asInstanceOf[bukkit.inventory.Item].bukkitForm))(Aethercraft.defaultFailureMessage)
-    })
+    if (player.inCreativeMode)  {
+      setMaterial(Air)
+    } else {
+      OptionT.fromOption[IO](
+        canBreak(player).orElse {
+          Option.unless(bukkitForm.getBlock.breakNaturally(item.asInstanceOf[bukkit.inventory.Item].bukkitForm))(Aethercraft.defaultFailureMessage)
+        }
+      )
+    }
 
   override def toString: String = s"(${location.toString}, ${material.toString})"
 

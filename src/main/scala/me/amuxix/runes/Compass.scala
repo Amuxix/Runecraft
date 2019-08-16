@@ -5,7 +5,7 @@ import cats.effect.IO
 import me.amuxix.block.{Block, BlockUtils}
 import me.amuxix.inventory.Item
 import me.amuxix.material.Material.{Air, Glass}
-import me.amuxix.pattern._
+import me.amuxix.pattern.{Tier, _}
 import me.amuxix.position.{BlockPosition, Vector3}
 import me.amuxix.runes.traits.Tiered
 import me.amuxix.{Player, _}

@@ -1,12 +1,14 @@
 package me.amuxix.pattern
 
 import me.amuxix.inventory.Item
+import me.amuxix.material.Material
+import me.amuxix.material.Properties.BlockProperty
 import me.amuxix.pattern.RunePattern.isMirrored
 import me.amuxix.position.BlockPosition
 import me.amuxix.runes.Rune
-import me.amuxix.{Direction, Matrix4, Named, Player}
+import me.amuxix.{=|>, Direction, Matrix4, Named, Player}
 
-/*import scala.reflect.runtime.{currentMirror => cm}
+/*import scala.reflect.runtime.currentMirror
 import scala.reflect.runtime.universe.TypeTag
 import scala.util.Try*/
 
@@ -15,12 +17,12 @@ import scala.util.Try*/
   */
 trait RunePattern[R <: Rune] extends Named {
   type RuneCreator = (BlockPosition, Player, Direction, Matrix4, Pattern) => R
+  implicit def block2blockElement(block: Material with BlockProperty): BlockElement = BlockElement(block)
 
-/*  def companionOf[T, CT](implicit tag: TypeTag[T]): CT = {
+  /*def companionOf[T, CT](implicit tag: TypeTag[T]): CT =
     Try[CT] {
       val companionModule = tag.tpe.typeSymbol.companion.asModule
-      cm.reflectModule(companionModule).instance.asInstanceOf[CT]
-    }
+      currentMirror.reflectModule(companionModule).instance.asInstanceOf[CT]
     }.getOrElse(throw new RuntimeException(s"Could not get companion object for type ${tag.tpe}"))*/
 
   val runeCreator: RuneCreator
@@ -30,7 +32,7 @@ trait RunePattern[R <: Rune] extends Named {
   val verticality: Boolean = false
   val directional: Boolean = false
   val buildableOnCeiling: Boolean = true
-  val activatesWith: PartialFunction[Option[Item], Boolean] = {
+  val activatesWith: Option[Item] =|> Boolean = {
     case Some(item) => !item.material.isBlock
     case None       => true //Empty hand
   }

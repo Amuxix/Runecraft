@@ -47,4 +47,6 @@ package object amuxix {
 
     def unapply(energy: Energy): Option[Int] = Some(energy.value)
   }
+
+  type =|>[-A, +B] = PartialFunction[A, B]
 }

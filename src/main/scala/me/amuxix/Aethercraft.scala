@@ -9,8 +9,8 @@ import me.amuxix.bukkit.Bukkit
 import me.amuxix.logging.Logger.info
 import me.amuxix.material.Recipe
 import me.amuxix.pattern.RunePattern
-import me.amuxix.runes.{Compass, RunicChest, Teleporter, TrueName}
-import me.amuxix.runes.test.{Test, Test2}
+import me.amuxix.runes._
+import me.amuxix.runes.test._
 import me.amuxix.runes.waypoints.Waypoint
 
 import scala.collection.mutable
@@ -19,7 +19,8 @@ import scala.concurrent.Future
 
 object Aethercraft {
   val defaultFailureMessage = "Some unknown force blocks you."
-  val activeRunes: LazyList[RunePattern[_]] = LazyList(Test, Test2, Waypoint, Teleporter, Compass, TrueName, RunicChest)
+  //val activeRunes: LazyList[RunePattern[_]] = LazyList(Test, Test2, Waypoint, Teleporter, Compass, TrueName, RunicChest, SuperTool)
+  val activeRunes: LazyList[RunePattern[_]] = LazyList(SuperTool)
 
   var logger: Logger = _
 

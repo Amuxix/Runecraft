@@ -1,33 +1,36 @@
 package me.amuxix.runes
 
-import cats.data.{EitherT, OptionT}
+import cats.data.EitherT
 import cats.effect.IO
-import cats.implicits._
+import cats.implicits.{catsStdInstancesForList, toTraverseOps}
 import me.amuxix.block.Block
 import me.amuxix.inventory.Item
-import me.amuxix.material.Material.{Redstone, RedstoneTorch}
+import me.amuxix.material.Material.{RedstoneTorch, RedstoneWire}
+import me.amuxix.material.Generic.{Composition, Tool => GenericTool}
+import me.amuxix.material.Material
+import me.amuxix.material.Properties.BreakableBlockProperty
 import me.amuxix.pattern._
 import me.amuxix.position.BlockPosition
 import me.amuxix.runes.traits.enchants.{BlockBreakTrigger, Enchant}
 import me.amuxix.runes.traits.{ConsumableBlocks, Tool}
-import me.amuxix.{Direction, Matrix4, Player}
+import me.amuxix.{=|>, Direction, Matrix4, Player}
 
 /**
   * Created by Amuxix on 01/02/2017.
   */
 object SuperTool extends RunePattern[SuperTool] with Enchant with BlockBreakTrigger {
   override val runeCreator: RuneCreator = SuperTool.apply
-  override val activatesWith: PartialFunction[Option[Item], Boolean] = {
+  override val activatesWith: Option[Item] =|> Boolean = {
     case Some(item) if item.material.isTool => true
   }
   // format: off
   override val layers: List[ActivationLayer] = List(
     ActivationLayer(
-      Redstone,        NotInRune, RedstoneTorch,   NotInRune, Redstone,
-      NotInRune,       Tier,      Redstone,        Tier,      NotInRune,
-      RedstoneTorch,   Redstone,  NotInRune,       Redstone,  RedstoneTorch,
-      NotInRune,       Tier,      Redstone,        Tier,      NotInRune,
-      Redstone,        NotInRune, RedstoneTorch,   NotInRune, Redstone
+      RedstoneWire,  NotInRune,    RedstoneTorch, NotInRune,    RedstoneWire,
+      NotInRune,     Tier,         RedstoneWire,  Tier,         NotInRune,
+      RedstoneTorch, RedstoneWire, NotInRune,     RedstoneWire, RedstoneTorch,
+      NotInRune,     Tier,         RedstoneWire,  Tier,         NotInRune,
+      RedstoneWire,  NotInRune,    RedstoneTorch, NotInRune,    RedstoneWire,
     )
   )
   // format: on
@@ -37,14 +40,6 @@ object SuperTool extends RunePattern[SuperTool] with Enchant with BlockBreakTrig
 
   override def incompatibleEnchants: Set[Enchant] = Set.empty
 
-  /*
-    sealed trait Tool extends Generic with Durable
-  trait Axe extends Tool
-  trait Hoe extends Tool
-  trait Pickaxe extends Tool
-  trait Shovel extends Tool
-  trait Shears extends Tool
-   */
 
   /** This should run the effect of the enchant and return whether to cancel the event or not */
   override def onBlockBreak(
@@ -52,13 +47,23 @@ object SuperTool extends RunePattern[SuperTool] with Enchant with BlockBreakTrig
     itemInHand: Option[Item],
     brokenBlock: Block
   ): EitherT[IO, String, Boolean] =
-    itemInHand
-      .filter(_.hasRuneEnchant(SuperTool))
-      .fold(EitherT.rightT[IO, String](false)) { item =>
-      brokenBlock.allNeighbours
-        .traverse(_.breakUsing(player, item))
-        .map(_.head)
-        .toLeft(false)
+    brokenBlock.material match {
+      case breakableBlockMaterial: Material with BreakableBlockProperty =>
+        itemInHand
+          .filter(_.hasRuneEnchant(SuperTool))
+          .fold(EitherT.rightT[IO, String](false)) { itemInHand =>
+            itemInHand.material match {
+              case tool: GenericTool with Composition if breakableBlockMaterial.isAppropriateTool(tool) =>
+                brokenBlock.allNeighbours
+                  .filter(_.material == breakableBlockMaterial)
+                  .traverse(_.breakUsing(player, itemInHand))
+                  .map(_.head)
+                  .toLeft(false)
+
+              case _ => EitherT.pure(false)
+            }
+          }
+      case _ => EitherT.pure(false)
     }
 }
 
@@ -76,9 +81,9 @@ case class SuperTool(
     * Internal activate method that should contain all code to activate a rune.
     */
   override protected def onActivate(activationItem: Option[Item]): EitherT[IO, String, Boolean] =
-    OptionT.fromOption[IO](activationItem)
+    EitherT.fromOption[IO](activationItem, "No activation tool.")
       .flatMap(_.addRuneEnchant(SuperTool))
-      .toLeft(true)
+      .map(_ => true)
 
   /**
     * Should this rune use a true name if the activator is wearing one?

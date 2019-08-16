@@ -36,13 +36,13 @@ object TrueName extends RunePattern[TrueName] with Enchant with BlockPlaceTrigge
 
   override def incompatibleEnchants: Set[Enchant] = Set.empty
 
-  def createTrueNameOf(player: Player): IO[PlayerHead] = {
+  def createTrueNameOf(player: Player): EitherT[IO, String, PlayerHead] = {
     val trueName: PlayerHead = Item(PlayerHeadMaterial).asInstanceOf[PlayerHead]
     for {
       _ <- trueName.setOwner(player)
       _ <- trueName.setDisplayName(trueNameDisplayFor(player))
       _ <- trueName.addCurses()
-      _ <- trueName.addRuneEnchant(TrueName).value
+      _ <- trueName.addRuneEnchant(TrueName)
     } yield trueName
   }
 
@@ -88,7 +88,7 @@ case class TrueName(
     } else {
       for {
         _ <- activator.addMaximumEnergyFrom(consume)
-        trueName <- EitherT.liftF(TrueName.createTrueNameOf(activator))
+        trueName <- TrueName.createTrueNameOf(activator)
         _ <- activator.add(trueName).toLeft(())
       } yield true
     }

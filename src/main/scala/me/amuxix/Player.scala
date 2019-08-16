@@ -51,6 +51,18 @@ trait Player {
 
   def itemInOffHand: Option[Item]
 
+  /**
+    * Check if player is online and in creative mode
+    * @return True if player is online and in creative mode, false if player is offline or not in creative mode
+    */
+  def inCreativeMode: Boolean
+
+  /**
+    * Check if player is online and in survival mode
+    * @return True if player is online and in survival mode, false if player is offline or not in survival mode
+    */
+  def inSurvivalMode: Boolean
+
   private lazy val energyReservoir: EnergyReservoir = EnergyReservoir(this)
 
   def addMaximumEnergyFrom(consumables: List[(List[Consumable#ConsumeIO], Option[Consumable#ConsumeIO])]): EitherT[IO, String, Energy] = energyReservoir.addMaximumEnergyFrom(consumables)

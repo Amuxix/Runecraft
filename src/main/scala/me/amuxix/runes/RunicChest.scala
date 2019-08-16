@@ -7,11 +7,11 @@ import me.amuxix.inventory.Item
 import me.amuxix.material.Material.{Chest, MagmaBlock, Obsidian}
 import me.amuxix.pattern._
 import me.amuxix.position.BlockPosition
-import me.amuxix.{Direction, Energy, Matrix4, Player}
+import me.amuxix.{=|>, Direction, Energy, Matrix4, Player}
 
 object RunicChest extends RunePattern[RunicChest] {
   override val runeCreator: RuneCreator = RunicChest.apply
-  override val activatesWith: PartialFunction[Option[Item], Boolean] = { case _ => true }
+  override val activatesWith: Option[Item] =|> Boolean = { case _ => true }
 
   // format: off
   val layers: List[BaseLayer] = List(
